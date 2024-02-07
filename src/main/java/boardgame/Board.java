@@ -12,6 +12,9 @@ public class Board {
 
     // Construtor da classe Board. Inicializa o tabuleiro com o número especificado de linhas e colunas.
     public Board(int rows, int columns) {
+        if(rows <1 || columns < 1){
+            throw new BoardException("Error creating board : there must be at least 1 row and 1 column");
+        }
         this.rows = rows;
         this.columns = columns;
         pieces = new Piece[rows][columns];
@@ -21,33 +24,56 @@ public class Board {
         return rows;
     }
 
-    // Método setter para definir o número de linhas do tabuleiro.
+    /* Metodo setter retirado para que a quantidade de linhas não seja alterada
+
     public void setRows(int rows) {
         this.rows = rows;
-    }
 
+    }
+*/
     // Método getter para retornar o número de colunas do tabuleiro.
     public int getColumns() {
         return columns;
     }
 
-    // Método setter para definir o número de colunas do tabuleiro.
-    public void setColumns(int columns) {
+
+    /*
+        Método setter retirado para nao alterar o número de colunas
+
+        public void setColumns(int columns) {
         this.columns = columns;
+
     }
+*/
 
     // Método para retornar uma peça do tabuleiro na posição dada pelas linhas e colunas.
     public Piece piece(int rows, int columns) {
+        // Verifica se a posição está dentro dos limites do tabuleiro.
+        if(!positionExists(rows, columns)){
+            // Lança uma exceção se a posição não estiver no tabuleiro.
+            throw new BoardException("Position not on the board");
+        }
         return pieces[rows][columns];
     }
 
     // Método sobrecarregado para retornar uma peça do tabuleiro dada uma posição.
     public Piece piece(Position position) {
+        // Verifica se a posição está dentro dos limites do tabuleiro.
+        if(!positionExists(position)){
+            // Lança uma exceção se a posição não estiver no tabuleiro.
+            throw new BoardException("Position not on the board");
+        }
+        // Retorna a peça na posição especificada.
         return pieces[position.getRow()][position.getColumn()];
     }
 
     // Método para colocar uma peça em uma determinada posição no tabuleiro.
     public void placePiece(Piece piece, Position position) {
+        if(thereIsAPiece(position)){
+            throw new BoardException("Theres already a piece on position" + position);
+
+        }
+
         pieces[position.getRow()][position.getColumn()] = piece;
         piece.position = position;
     }
@@ -61,6 +87,15 @@ public class Board {
             return positionExists(position.getRow(),position.getColumn());
         }
 
+    // Método para verificar se há uma peça em uma determinada posição do tabuleiro.
+        public boolean thereIsAPiece(Position position){
+            // testa se a posição existe e lança a exceção antes de retornar se há uma peça na position
+            if(!positionExists(position)) {
+                throw new BoardException("Theres already a piece on position" + position);
+            }
+                return piece(position) != null;
+                // Verifica se a posição não é nula.
 
+        }
     }
 
